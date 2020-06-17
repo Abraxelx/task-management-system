@@ -1,41 +1,75 @@
 package com.taskmanagement.mongo.api.controller;
 
 import com.taskmanagement.mongo.api.model.User;
-import com.taskmanagement.mongo.api.repository.UsersRepository;
+import com.taskmanagement.mongo.api.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-import java.util.Optional;
 
-@RequestMapping("/api")
 @Controller
 public class UserController {
 
     @Autowired
-    private UsersRepository repository;
+    private CustomUserDetailsService userService;
 
-    @PostMapping(value = "/addUser")
-    public String saveUser(@RequestBody User user){
-        repository.save(user);
-        return "Added users with name: " +user.getFirstName() + user.getLastName();
+    public ModelAndView login() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+        return modelAndView;
     }
 
-    @GetMapping("/findUsers")
-    public List<User> getUsers(){
-        return repository.findAll();
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    public ModelAndView signup() {
+        ModelAndView modelAndView = new ModelAndView();
+        User user = new User();
+        modelAndView.addObject("user", user);
+        modelAndView.setViewName("signup");
+        return modelAndView;
     }
 
-    @GetMapping("/findUserById/{id}")
-    public Optional<User> getUser(@PathVariable int id){
-        return repository.findById(id);
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
+    public ModelAndView createNewUser(User user, BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView();
+        User userExists = userService.findUserByEmail(user.getEmail());
+        if (userExists != null) {
+            bindingResult
+                    .rejectValue("email", "error.user",
+                            "There is already a user registered with the username provided");
+        }
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("signup");
+        } else {
+            userService.saveUser(user);
+            modelAndView.addObject("successMessage", "User has been registered successfully");
+            modelAndView.addObject("user", new User());
+            modelAndView.setViewName("login");
+
+        }
+        return modelAndView;
     }
 
-    @DeleteMapping("/deleteUserById/{id}")
-    public String deleteUser(@PathVariable int id){
-        repository.deleteById(id);
-        return "User deleted with id : " + id;
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+    public ModelAndView dashboard() {
+        ModelAndView modelAndView = new ModelAndView();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        modelAndView.addObject("currentUser", user);
+        modelAndView.addObject("fullName", "Welcome " + user.getFullname());
+        modelAndView.addObject("adminMessage", "Content Available Only for Users with Admin Role");
+        modelAndView.setViewName("dashboard");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
+    public ModelAndView home() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("home");
+        return modelAndView;
     }
 
 }
