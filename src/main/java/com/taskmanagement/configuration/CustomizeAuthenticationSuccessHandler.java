@@ -18,7 +18,10 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         for(GrantedAuthority authority : authentication.getAuthorities()){
             if("ADMIN".equals(authority.getAuthority())){
                 response.sendRedirect("/dashboard");
+            }else{
+                response.sendRedirect("/taskboard");
             }
+
         }
 
     }

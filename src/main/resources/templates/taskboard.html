@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="default">
+<head>
+    <meta charset="UTF-8">
+    <title>You Are In TaskBoard Now</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>ADD TASK</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <td>Title</td>
+            <td>Text</td>
+            <td>Due to</td>
+            <td>Submit</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <input type="text" name="title" id="inputTaskTitle" class="form-control" placeholder="Title" required="" /></td>
+            <td>
+                <input type="text" name="title" id="inputTaskText" class="form-control" placeholder="Title" required="" />
+            </td>
+            <td>
+                <input type="text" class="form-control dt" value="2016-04-12"/>
+            </td>
+            <td>
+                <button class="btn btn-lg btn-success btn-block" type="submit">Add Task</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
