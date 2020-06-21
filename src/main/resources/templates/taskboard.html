@@ -10,8 +10,8 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h2>ADD TASK</h2>
     <table class="table table-bordered table-striped">
+        <h2>ADD TASK</h2>
         <thead>
         <tr>
             <td>Title</td>
@@ -20,21 +20,46 @@
             <td>Submit</td>
         </tr>
         </thead>
+        <form class="form-taskboard" th:action="@{/taskboard/newTask}" method="post">
         <tbody>
         <tr>
             <td>
-                <input type="text" name="title" id="inputTaskTitle" class="form-control" placeholder="Title" required="" /></td>
+                <input type="text" name="title" id="inputTaskTitle" class="form-control" placeholder="Title"required=""/></td>
             <td>
-                <input type="text" name="title" id="inputTaskText" class="form-control" placeholder="Title" required="" />
+                <input type="text" name="text" id="inputTaskText" class="form-control" placeholder="Text"required=""/>
             </td>
             <td>
-                <input type="text" class="form-control dt" value="2016-04-12"/>
+                <input type="date" name="dueTo" id="inputTaskDueTo" class="form-control" placeholder="Due To" value="dd-MMM-yyyy"/>
             </td>
             <td>
                 <button class="btn btn-lg btn-success btn-block" type="submit">Add Task</button>
             </td>
         </tr>
         </tbody>
+        </form>
+    </table>
+
+    <table class="table table-bordered table-striped">
+
+        <thead>
+        <h2>TASKS</h2>
+        <tr>
+            <td>ID</td>
+            <td>Title</td>
+            <td>Text</td>
+            <td>Due to</td>
+        </tr>
+        </thead>
+         <tbody>
+        <tr  th:each="task :${tasks}">
+            <td th:text="${task.id}"></td>
+            <td th:text="${task.title}"></td>
+            <td th:text="${task.text}"></td>
+            <td th:date="${task.dueTo}"></td>
+        </tr>
+
+        </tbody>
+
     </table>
 </div>
 </body>

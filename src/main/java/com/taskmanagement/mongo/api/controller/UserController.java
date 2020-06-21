@@ -65,17 +65,6 @@ public class UserController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/taskboard", method = RequestMethod.GET)
-    public ModelAndView taskboard(){
-        ModelAndView modelAndView = new ModelAndView();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(authentication.getName());
-        modelAndView.addObject("currentUser", user);
-        modelAndView.addObject("fullName", "Welcome " +user.getFullname());
-        modelAndView.setViewName("taskboard");
-        return modelAndView;
-    }
-
     @RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
     public ModelAndView home() {
         ModelAndView modelAndView = new ModelAndView();
